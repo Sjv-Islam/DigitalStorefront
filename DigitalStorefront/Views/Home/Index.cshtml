@@ -1,0 +1,45 @@
+﻿@model IEnumerable<DigitalStorefront.Models.Order>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="/Create">building Web apps with ASP.NET Core</a>.</p>
+    <a class="btn btn-primary btn-lg mt-4" asp-controller="Home" asp-action="Create">Create Order</a>
+</div>
+<div>
+    <h1>Orders</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order Code</th>
+                <th>Customer Name</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderCode</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.Phone</td>
+                    <td>@order.Address</td>
+                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.TotalAmount.ToString("C")</td>
+                    <td>
+                        <a class="btn btn-warning" asp-controller="Home" asp-action="Invoice" asp-route-id="@order.OrderId" class="btn btn-info">Print</a>
+                        <a class="btn btn-warning" asp-controller="Home" asp-action="Edit" asp-route-id="@order.OrderId">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Home" asp-action="Delete" asp-route-id="@order.OrderId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

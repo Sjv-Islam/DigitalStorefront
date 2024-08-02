@@ -1,0 +1,99 @@
+﻿@model IEnumerable<DigitalStorefront.Models.ProductDetail>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="product-details">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr class="product-detail">
+                <td>
+                    <input name="ProductDetails[@i].ProductName" value="@Model.ElementAt(i).ProductName" />
+                </td>
+                <td>
+                    <input name="ProductDetails[@i].Quantity" value="@Model.ElementAt(i).Quantity" class="quantity" />
+                </td>
+                <td>
+                    <input name="ProductDetails[@i].UnitPrice" value="@Model.ElementAt(i).UnitPrice" class="unit-price" />
+                </td>
+                <td>
+                    <input name="ProductDetails[@i].TotalPrice" value="@Model.ElementAt(i).TotalPrice" class="total-price" readonly />
+                </td>
+                <td>
+                    <button type="button" class="remove-product" data-index="@i">Remove</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button type="button" id="add-product">Add Product</button>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let productDetailsContainer = document.getElementById('product-details');
+        let addProductButton = document.getElementById('add-product');
+
+        addProductButton.addEventListener('click', function () {
+            let index = productDetailsContainer.children.length;
+            let newProductDetail = `
+                    <tr class="product-detail">
+                        <td>
+                            <input name="ProductDetails[${index}].ProductName" />
+                        </td>
+                        <td>
+                            <input name="ProductDetails[${index}].Quantity" class="quantity" />
+                        </td>
+                        <td>
+                            <input name="ProductDetails[${index}].UnitPrice" class="unit-price" />
+                        </td>
+                        <td>
+                            <input name="ProductDetails[${index}].TotalPrice" class="total-price" readonly />
+                        </td>
+                        <td>
+                            <button type="button" class="remove-product" data-index="${index}">Remove</button>
+                        </td>
+                    </tr>
+                `;
+            productDetailsContainer.insertAdjacentHTML('beforeend', newProductDetail);
+        });
+
+        productDetailsContainer.addEventListener('input', function (e) {
+            if (e.target.classList.contains('quantity') || e.target.classList.contains('unit-price')) {
+                updateTotalPrice(e.target);
+            }
+        });
+
+        productDetailsContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-product')) {
+                e.target.parentElement.parentElement.remove();
+                updateIndices();
+            }
+        });
+
+        function updateTotalPrice(element) {
+            let row = element.closest('tr');
+            let quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+            let unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
+            let totalPrice = quantity * unitPrice;
+            row.querySelector('.total-price').value = totalPrice.toFixed(2); // Format as a decimal
+        }
+
+        function updateIndices() {
+            let productDetails = productDetailsContainer.querySelectorAll('.product-detail');
+            productDetails.forEach((detail, index) => {
+                detail.querySelectorAll('input').forEach(input => {
+                    let name = input.name;
+                    input.name = name.replace(/\[\d+\]/, `[${index}]`);
+                });
+            });
+        }
+    });
+</script>
