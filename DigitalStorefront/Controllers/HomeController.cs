@@ -177,7 +177,7 @@ namespace DigitalStorefront.Controllers
             _context.Update(order);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Home");
         }
 
 
