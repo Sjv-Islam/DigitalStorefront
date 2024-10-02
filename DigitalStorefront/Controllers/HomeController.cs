@@ -191,7 +191,7 @@ namespace DigitalStorefront.Controllers
 
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Home");
         }
     }
 }
